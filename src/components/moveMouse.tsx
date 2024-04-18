@@ -1,6 +1,8 @@
 import { Ball } from '../types';
 
-const mouseSpeed = 5;
+// Choose initial speed of the balls
+// The higher the number, the faster they move
+const INITIAL_BALL_SPEED = 5;
 
 const moveMouse = (
   e: React.MouseEvent<HTMLCanvasElement>,
@@ -13,21 +15,23 @@ const moveMouse = (
   const mouseY = e.clientY - rect.top;
 
   balls.forEach((ball, index) => {
-    const deltaX = mouseX - ball.x;
-    const deltaY = mouseY - ball.y;
-
-    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+    const dx = mouseX - ball.x;
+    const dy = mouseY - ball.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
 
     if (distance <= ball.radius) {
       setBalls((prevBalls) => {
         const newBalls = [...prevBalls];
-        if (newBalls[index].speed < mouseSpeed) {
-          newBalls[index] = { ...newBalls[index], speed: mouseSpeed };
+
+        if (newBalls[index].speed < INITIAL_BALL_SPEED) {
+          newBalls[index] = { ...newBalls[index], speed: INITIAL_BALL_SPEED };
         }
+
         newBalls[index] = {
           ...newBalls[index],
-          direction: { x: -deltaX, y: -deltaY },
+          direction: { x: -dx, y: -dy },
         };
+
         return newBalls;
       });
     }

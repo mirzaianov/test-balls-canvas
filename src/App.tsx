@@ -1,21 +1,22 @@
 import { useState, useRef, useEffect } from 'react';
 import { Ball } from './types';
 import initialBalls from './utils/initialBalls';
-import animateBalls from './utils/animateBalls';
-import moveMouse from './utils/moveMouse';
-import moveBalls from './utils/moveBalls';
+import animateBalls from './components/animateBalls';
+import moveMouse from './components/moveMouse';
+import moveBalls from './components/moveBalls';
 
 interface Size {
   width: number;
   height: number;
 }
 
-const canvasInitialWidth = 926;
-const canvasInitialHeight = 600;
-const PADDING = 40;
+const breakpoint = 768;
+const PADDING = 20;
+const canvasInitialWidth = breakpoint - PADDING * 2;
+const canvasInitialHeight = Math.floor(canvasInitialWidth / 1.5);
 
 const initialCanvasSize = (): Size => {
-  if (window.innerWidth > 1024) {
+  if (window.innerWidth > breakpoint) {
     return {
       width: canvasInitialWidth,
       height: canvasInitialHeight,
@@ -32,8 +33,9 @@ const App = (): JSX.Element => {
   const [canvasSize, setCanvasSize] = useState<Size>(initialCanvasSize);
 
   useEffect(() => {
+    console.log('useEffect handleResize');
     const handleResize = () => {
-      if (window.innerWidth > 1024) {
+      if (window.innerWidth > breakpoint) {
         setCanvasSize({
           width: canvasInitialWidth,
           height: canvasInitialHeight,
@@ -61,6 +63,7 @@ const App = (): JSX.Element => {
   const canvasRef = useRef<HTMLCanvasElement>(null!);
 
   useEffect(() => {
+    console.log('useEffect animateBalls');
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d')!;
 
@@ -74,6 +77,7 @@ const App = (): JSX.Element => {
   };
 
   useEffect(() => {
+    console.log('useEffect moveBalls');
     const canvas = canvasRef.current;
     const interval = setInterval(() => moveBalls(canvas, setBalls), 10);
 
@@ -84,9 +88,11 @@ const App = (): JSX.Element => {
     return () => clearInterval(interval);
   }, []);
 
+  console.log('app');
+
   return (
     <main
-      className={`app flex w-full flex-col items-center justify-center gap-10 p-10`}
+      className={`app flex w-full flex-col items-center justify-center gap-10 p-5 pt-10`}
     >
       <h1 className={`text-5xl font-bold uppercase`}>BALLS</h1>
       <ul>

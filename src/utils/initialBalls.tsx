@@ -9,12 +9,16 @@ const MIN_BALL_RADIUS = 25;
 const MAX_BALL_RADIUS = 55;
 
 const COLOR_RANGE = [
-  '#E779C1',
+  '#ff006e',
   '#58C7F3',
-  '#FFD200',
-  '#221551',
-  '#71EAD2',
-  '#EC8C78',
+  '#ffbe0b',
+  '#3a86ff',
+  '#fb5607',
+  '#8338ec',
+  '#06d6a0',
+  '#8ac926',
+  '#5f0f40',
+  '#9ef01a',
 ];
 
 const randomNumber = (min: number, max: number) => {
