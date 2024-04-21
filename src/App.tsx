@@ -4,6 +4,7 @@ import initialBalls from './utils/initialBalls';
 import animateBalls from './components/animateBalls';
 import moveMouse from './components/moveMouse';
 import moveBalls from './components/moveBalls';
+import Canvas from './components/Canvas';
 
 interface Size {
   width: number;
@@ -33,7 +34,6 @@ const App = (): JSX.Element => {
   const [canvasSize, setCanvasSize] = useState<Size>(initialCanvasSize);
 
   useEffect(() => {
-    console.log('useEffect handleResize');
     const handleResize = () => {
       if (window.innerWidth > breakpoint) {
         setCanvasSize({
@@ -63,7 +63,6 @@ const App = (): JSX.Element => {
   const canvasRef = useRef<HTMLCanvasElement>(null!);
 
   useEffect(() => {
-    console.log('useEffect animateBalls');
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d')!;
 
@@ -77,7 +76,6 @@ const App = (): JSX.Element => {
   };
 
   useEffect(() => {
-    console.log('useEffect moveBalls');
     const canvas = canvasRef.current;
     const interval = setInterval(() => moveBalls(canvas, setBalls), 10);
 
@@ -87,8 +85,6 @@ const App = (): JSX.Element => {
 
     return () => clearInterval(interval);
   }, []);
-
-  console.log('app');
 
   return (
     <main
@@ -104,13 +100,11 @@ const App = (): JSX.Element => {
           color
         </li>
       </ul>
-      <canvas
-        className={`canvas rounded-xl bg-neutral-content`}
-        ref={canvasRef}
-        onMouseMove={handleMouseMove}
-        width={canvasSize.width}
-        height={canvasSize.height}
-      ></canvas>
+      <Canvas
+        canvasRef={canvasRef}
+        handleMouseMove={handleMouseMove}
+        canvasSize={canvasSize}
+      />
     </main>
   );
 };
