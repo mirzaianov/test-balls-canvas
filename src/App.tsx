@@ -5,17 +5,20 @@ const App = (): JSX.Element => {
     <main
       className={`app flex w-full flex-col items-center justify-center gap-10 p-5 pt-10`}
     >
-      <h1 className={`text-5xl font-bold uppercase text-accent`}>Billiards</h1>
+      <h1 className={`text-5xl font-bold uppercase`}>
+        <span className={`text-secondary`}>⊚</span> Billiards{' '}
+        <span className={`text-secondary`}>⊚</span>
+      </h1>
       <ul>
         <li>
-          * To push a ball - hold the{' '}
-          <span className={`font-bold uppercase text-secondary`}>left</span>{' '}
-          mouse button and and touch the ball
+          <span className={`text-accent`}>➽</span> To push a ball - hold the{' '}
+          <span className={`font-bold uppercase text-accent`}>left</span> mouse
+          button and and touch the ball
         </li>
         <li>
-          * To change the color of the ball -{' '}
-          <span className={`font-bold uppercase text-secondary`}>right</span>{' '}
-          click on the ball and pick a color
+          <span className={`text-error`}>➽</span> To change a color of the ball
+          - <span className={`font-bold uppercase text-error`}>right</span>{' '}
+          click on the ball and pick the color
         </li>
       </ul>
       <Canvas />
