@@ -2,7 +2,7 @@ import { Ball } from '../types';
 
 // Choose initial speed of the balls
 // The higher the number, the faster they move
-const INITIAL_BALL_SPEED = 5;
+const INITIAL_BALL_SPEED = 4;
 
 const moveMouse = (
   e: React.MouseEvent<HTMLCanvasElement>,
