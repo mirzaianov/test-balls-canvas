@@ -5,5 +5,4 @@ export interface Ball {
   color: string;
   speed: number;
   direction: { x: number; y: number };
-  // border?: string | null;
 }

@@ -4,6 +4,7 @@ import initialBalls from '../utils/initialBalls';
 import animateBalls from '../utils/animateBalls';
 import moveMouse from '../utils/moveMouse';
 import moveBalls from '../utils/moveBalls';
+import updateBallColor from '../utils/updateBallColor';
 
 interface Size {
   width: number;
@@ -32,6 +33,9 @@ const initialCanvasSize = (): Size => {
 const Canvas: React.FC = () => {
   const [canvasSize, setCanvasSize] = useState<Size>(initialCanvasSize);
   const [isMouseDown, setIsMouseDown] = useState(false);
+  const [selectedBall, setSelectedBall] = useState<Ball | null>(null);
+
+  const colorInputRef = useRef<HTMLInputElement>(null!);
 
   useEffect(() => {
     const handleResize = () => {
@@ -77,12 +81,38 @@ const Canvas: React.FC = () => {
     }
   };
 
-  const handleMouseDown = () => {
-    setIsMouseDown(true);
+  const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (e.button === 0) {
+      setIsMouseDown(true);
+    } else if (e.button === 2) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const clickedBall = balls.find((ball) => {
+        const distance = Math.sqrt((ball.x - x) ** 2 + (ball.y - y) ** 2);
+        return distance <= ball.radius;
+      });
+      if (clickedBall) {
+        setSelectedBall(clickedBall);
+        const curRect = canvasRef.current.getBoundingClientRect();
+        colorInputRef.current.style.left = `${x + clickedBall.radius + curRect.left}px`;
+        colorInputRef.current.style.top = `${y + curRect.top}px`;
+        colorInputRef.current.click();
+      }
+    }
   };
 
   const handleMouseUp = () => {
     setIsMouseDown(false);
+  };
+
+  const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newColor = e.target.value;
+    setBalls(
+      updateBallColor(balls, selectedBall, newColor) as React.SetStateAction<
+        Ball[]
+      >,
+    );
   };
 
   useEffect(() => {
@@ -97,15 +127,24 @@ const Canvas: React.FC = () => {
   }, []);
 
   return (
-    <canvas
-      className={`canvas rounded-xl bg-neutral-content`}
-      ref={canvasRef}
-      onMouseMove={handleMouseMove}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      width={canvasSize.width}
-      height={canvasSize.height}
-    ></canvas>
+    <>
+      <canvas
+        className={`canvas rounded-xl bg-neutral-content`}
+        ref={canvasRef}
+        onMouseMove={handleMouseMove}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onContextMenu={(e) => e.preventDefault()}
+        width={canvasSize.width}
+        height={canvasSize.height}
+      ></canvas>
+      <input
+        ref={colorInputRef}
+        type="color"
+        style={{ position: 'absolute', visibility: 'hidden' }}
+        onInput={handleColorChange}
+      />
+    </>
   );
 };
 
