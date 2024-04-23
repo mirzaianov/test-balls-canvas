@@ -11,22 +11,22 @@ interface Size {
   height: number;
 }
 
-const breakpoint = 768;
+const BREAKPOINT = 768;
 const PADDING = 20;
-const canvasInitialWidth = breakpoint - PADDING * 2;
-const canvasInitialHeight = Math.floor(canvasInitialWidth / 1.5);
+const CANVAS_INITIAL_WIDTH = BREAKPOINT - PADDING * 2;
+const CANVAS_INITIAL_HEIGHT = Math.floor(CANVAS_INITIAL_WIDTH / 1.5);
 
 const initialCanvasSize = (): Size => {
-  if (window.innerWidth > breakpoint) {
+  if (window.innerWidth > BREAKPOINT) {
     return {
-      width: canvasInitialWidth,
-      height: canvasInitialHeight,
+      width: CANVAS_INITIAL_WIDTH,
+      height: CANVAS_INITIAL_HEIGHT,
     };
   }
 
   return {
     width: window.innerWidth - PADDING * 2,
-    height: canvasInitialHeight,
+    height: CANVAS_INITIAL_HEIGHT,
   };
 };
 
@@ -35,15 +35,15 @@ const App = (): JSX.Element => {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth > breakpoint) {
+      if (window.innerWidth > BREAKPOINT) {
         setCanvasSize({
-          width: canvasInitialWidth,
-          height: canvasInitialHeight,
+          width: CANVAS_INITIAL_WIDTH,
+          height: CANVAS_INITIAL_HEIGHT,
         });
       } else {
         setCanvasSize({
           width: window.innerWidth - PADDING * 2,
-          height: canvasInitialHeight,
+          height: CANVAS_INITIAL_HEIGHT,
         });
       }
     };
