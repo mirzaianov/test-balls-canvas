@@ -1,5 +1,4 @@
-// import React, { RefObject, MouseEvent } from 'react';
-import { useState, useRef, useEffect, RefObject, MouseEvent } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Ball } from '../types';
 import initialBalls from '../utils/initialBalls';
 import animateBalls from '../utils/animateBalls';
