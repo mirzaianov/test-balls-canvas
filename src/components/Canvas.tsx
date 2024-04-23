@@ -31,6 +31,7 @@ const initialCanvasSize = (): Size => {
 
 const Canvas: React.FC = () => {
   const [canvasSize, setCanvasSize] = useState<Size>(initialCanvasSize);
+  const [isMouseDown, setIsMouseDown] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -71,7 +72,17 @@ const Canvas: React.FC = () => {
   }, [balls]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    moveMouse(e, balls, setBalls);
+    if (isMouseDown) {
+      moveMouse(e, balls, setBalls);
+    }
+  };
+
+  const handleMouseDown = () => {
+    setIsMouseDown(true);
+  };
+
+  const handleMouseUp = () => {
+    setIsMouseDown(false);
   };
 
   useEffect(() => {
@@ -90,6 +101,8 @@ const Canvas: React.FC = () => {
       className={`canvas rounded-xl bg-neutral-content`}
       ref={canvasRef}
       onMouseMove={handleMouseMove}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
       width={canvasSize.width}
       height={canvasSize.height}
     ></canvas>
