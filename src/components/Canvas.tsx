@@ -16,7 +16,6 @@ const Canvas: React.FC<CanvasProps> = ({
   handleMouseMove,
   canvasSize,
 }) => {
-  console.log('canvas');
   return (
     <canvas
       className={`canvas rounded-xl bg-neutral-content`}

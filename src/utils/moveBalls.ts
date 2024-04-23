@@ -1,5 +1,5 @@
 import { Ball } from '../types';
-import checkCollision from '../utils/checkCollision';
+import checkCollision from './checkCollision';
 
 // Friction coefficient
 // The higher the number, the faster the balls will slow down

@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { Ball } from './types';
 import initialBalls from './utils/initialBalls';
-import animateBalls from './components/animateBalls';
-import moveMouse from './components/moveMouse';
-import moveBalls from './components/moveBalls';
+import animateBalls from './utils/animateBalls';
+import moveMouse from './utils/moveMouse';
+import moveBalls from './utils/moveBalls';
 import Canvas from './components/Canvas';
 
 interface Size {
@@ -90,7 +90,7 @@ const App = (): JSX.Element => {
     <main
       className={`app flex w-full flex-col items-center justify-center gap-10 p-5 pt-10`}
     >
-      <h1 className={`text-5xl font-bold uppercase`}>BALLS</h1>
+      <h1 className={`text-5xl font-bold uppercase`}>Billiards</h1>
       <ul>
         <li>
           * To push a ball - hold the left mouse button and and touch the ball
