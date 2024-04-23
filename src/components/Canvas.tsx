@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Ball } from '../types';
 import initialBalls from '../utils/initialBalls';
 import animateBalls from '../utils/animateBalls';
@@ -81,26 +81,29 @@ const Canvas: React.FC = () => {
     }
   };
 
-  const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (e.button === 0) {
-      setIsMouseDown(true);
-    } else if (e.button === 2) {
-      const rect = e.currentTarget.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const clickedBall = balls.find((ball) => {
-        const distance = Math.sqrt((ball.x - x) ** 2 + (ball.y - y) ** 2);
-        return distance <= ball.radius;
-      });
-      if (clickedBall) {
-        setSelectedBall(clickedBall);
-        const curRect = canvasRef.current.getBoundingClientRect();
-        colorInputRef.current.style.left = `${x + clickedBall.radius + curRect.left}px`;
-        colorInputRef.current.style.top = `${y + curRect.top}px`;
-        colorInputRef.current.click();
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent<HTMLCanvasElement>) => {
+      if (e.button === 0) {
+        setIsMouseDown(true);
+      } else if (e.button === 2) {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const clickedBall = balls.find((ball) => {
+          const distance = Math.sqrt((ball.x - x) ** 2 + (ball.y - y) ** 2);
+          return distance <= ball.radius;
+        });
+        if (clickedBall) {
+          setSelectedBall(clickedBall);
+          const curRect = canvasRef.current.getBoundingClientRect();
+          colorInputRef.current.style.left = `${x + clickedBall.radius + curRect.left}px`;
+          colorInputRef.current.style.top = `${y + curRect.top}px`;
+          colorInputRef.current.click();
+        }
       }
-    }
-  };
+    },
+    [balls],
+  );
 
   const handleMouseUp = () => {
     setIsMouseDown(false);
@@ -124,6 +127,32 @@ const Canvas: React.FC = () => {
     });
 
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const handleGlobalMouseUp = () => {
+      setIsMouseDown(false);
+    };
+
+    window.addEventListener('mouseup', handleGlobalMouseUp);
+
+    return () => {
+      window.removeEventListener('mouseup', handleGlobalMouseUp);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleGlobalMouseDown = (e: MouseEvent) => {
+      if (e.button === 0) {
+        setIsMouseDown(true);
+      }
+    };
+
+    window.addEventListener('mousedown', handleGlobalMouseDown);
+
+    return () => {
+      window.removeEventListener('mousedown', handleGlobalMouseDown);
+    };
   }, []);
 
   return (
