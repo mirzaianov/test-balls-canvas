@@ -213,6 +213,25 @@ const Canvas: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        canvasRef.current &&
+        colorPickerRef.current &&
+        !canvasRef.current.contains(e.target as Node) &&
+        !colorPickerRef.current.contains(e.target as Node)
+      ) {
+        setShowColorPicker(false);
+      }
+    };
+
+    window.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      window.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <>
       <canvas
