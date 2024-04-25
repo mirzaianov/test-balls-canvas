@@ -37,9 +37,9 @@ const Canvas: React.FC = () => {
   const [selectedBall, setSelectedBall] = useState<Ball | null>(null);
   const [color, setColor] = useState('#000000');
   const [showColorPicker, setShowColorPicker] = useState(false);
-  const [pickerPosition, setPickerPosition] = useState({ x: 0, y: 0 });
+  const [pickerPosition, setPickerPosition] = useState({ x: -9999, y: -9999 });
 
-  const colorInputRef = useRef<HTMLInputElement>(null!);
+  const colorPickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -71,6 +71,30 @@ const Canvas: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null!);
 
   useEffect(() => {
+    if (showColorPicker && selectedBall && colorPickerRef.current) {
+      const rect = canvasRef.current.getBoundingClientRect();
+      let pickerX = selectedBall.x + selectedBall.radius + 5 + rect.left;
+      let pickerY = selectedBall.y + selectedBall.radius + 5 + rect.top;
+
+      const colorPickerWidth = colorPickerRef.current.offsetWidth;
+      const colorPickerHeight = colorPickerRef.current.offsetHeight;
+      if (pickerX + colorPickerWidth > window.innerWidth) {
+        pickerX =
+          selectedBall.x - selectedBall.radius - colorPickerWidth + rect.left;
+      }
+      if (pickerY + colorPickerHeight > window.innerHeight) {
+        pickerY =
+          selectedBall.y - selectedBall.radius - colorPickerHeight + rect.top;
+      }
+
+      setPickerPosition({
+        x: pickerX,
+        y: pickerY,
+      });
+    }
+  }, [showColorPicker, selectedBall]);
+
+  useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d')!;
 
@@ -92,19 +116,37 @@ const Canvas: React.FC = () => {
         setShowColorPicker(false);
       } else if (e.button === 2) {
         e.preventDefault();
+
         const rect = e.currentTarget.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
+
         const clickedBall = balls.find((ball) => {
           const distance = Math.sqrt((ball.x - x) ** 2 + (ball.y - y) ** 2);
           return distance <= ball.radius;
         });
+
         if (clickedBall) {
           setSelectedBall(clickedBall);
           setShowColorPicker(true);
+
+          let pickerX = clickedBall.x + clickedBall.radius + 5 + rect.left;
+          let pickerY = clickedBall.y + clickedBall.radius + 5 + rect.top;
+
+          const colorPickerWidth = colorPickerRef.current?.offsetWidth ?? 0;
+          const colorPickerHeight = colorPickerRef.current?.offsetHeight ?? 0;
+          if (pickerX + colorPickerWidth > window.innerWidth) {
+            pickerX =
+              clickedBall.x - clickedBall.radius - colorPickerWidth + rect.left;
+          }
+          if (pickerY + colorPickerHeight > window.innerHeight) {
+            pickerY =
+              clickedBall.y - clickedBall.radius - colorPickerHeight + rect.top;
+          }
+
           setPickerPosition({
-            x: clickedBall.x + clickedBall.radius + 5 + rect.left, // Adjust the x-coordinate
-            y: clickedBall.y + rect.top, // Adjust the y-coordinate
+            x: pickerX,
+            y: pickerY,
           });
         }
       }
@@ -177,13 +219,13 @@ const Canvas: React.FC = () => {
       ></canvas>
       {showColorPicker && selectedBall && (
         <div
+          ref={colorPickerRef}
           style={{
             position: 'absolute',
             left: `${pickerPosition.x}px`,
             top: `${pickerPosition.y}px`,
           }}
         >
-          {' '}
           <TwitterPicker
             color={color}
             onChangeComplete={handleColorChange}
