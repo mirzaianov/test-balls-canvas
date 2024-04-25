@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { TwitterPicker } from 'react-color';
 import { Ball } from '../types';
 import initialBalls from '../utils/initialBalls';
 import animateBalls from '../utils/animateBalls';
@@ -34,6 +35,9 @@ const Canvas: React.FC = () => {
   const [canvasSize, setCanvasSize] = useState<Size>(initialCanvasSize);
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [selectedBall, setSelectedBall] = useState<Ball | null>(null);
+  const [color, setColor] = useState('#000000');
+  const [showColorPicker, setShowColorPicker] = useState(false);
+  const [pickerPosition, setPickerPosition] = useState({ x: 0, y: 0 });
 
   const colorInputRef = useRef<HTMLInputElement>(null!);
 
@@ -86,6 +90,7 @@ const Canvas: React.FC = () => {
       if (e.button === 0) {
         setIsMouseDown(true);
       } else if (e.button === 2) {
+        e.preventDefault();
         const rect = e.currentTarget.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
@@ -95,10 +100,11 @@ const Canvas: React.FC = () => {
         });
         if (clickedBall) {
           setSelectedBall(clickedBall);
-          const curRect = canvasRef.current.getBoundingClientRect();
-          colorInputRef.current.style.left = `${x + clickedBall.radius + curRect.left}px`;
-          colorInputRef.current.style.top = `${y + curRect.top}px`;
-          colorInputRef.current.click();
+          setShowColorPicker(true);
+          setPickerPosition({
+            x: clickedBall.x + clickedBall.radius + 5 + rect.left, // Adjust the x-coordinate
+            y: clickedBall.y + rect.top, // Adjust the y-coordinate
+          });
         }
       }
     },
@@ -109,13 +115,14 @@ const Canvas: React.FC = () => {
     setIsMouseDown(false);
   };
 
-  const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newColor = e.target.value;
+  const handleColorChange = (color: any) => {
+    setColor(color.hex);
     setBalls(
-      updateBallColor(balls, selectedBall, newColor) as React.SetStateAction<
+      updateBallColor(balls, selectedBall, color.hex) as React.SetStateAction<
         Ball[]
       >,
     );
+    setShowColorPicker(false);
   };
 
   useEffect(() => {
@@ -167,12 +174,22 @@ const Canvas: React.FC = () => {
         width={canvasSize.width}
         height={canvasSize.height}
       ></canvas>
-      <input
-        ref={colorInputRef}
-        type="color"
-        style={{ position: 'absolute', visibility: 'hidden' }}
-        onInput={handleColorChange}
-      />
+      {showColorPicker && selectedBall && (
+        <div
+          style={{
+            position: 'absolute',
+            left: `${pickerPosition.x}px`,
+            top: `${pickerPosition.y}px`,
+          }}
+        >
+          {' '}
+          <TwitterPicker
+            color={color}
+            onChangeComplete={handleColorChange}
+            triangle="hide"
+          />
+        </div>
+      )}
     </>
   );
 };

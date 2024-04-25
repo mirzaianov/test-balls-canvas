@@ -3,7 +3,7 @@ import Canvas from './components/Canvas';
 const App = (): JSX.Element => {
   return (
     <main
-      className={`app flex w-full flex-col items-center justify-center gap-10 p-5 pt-10`}
+      className={`app relative flex w-full flex-col items-center justify-center gap-10 p-5 pt-10`}
     >
       <h1 className={`text-5xl font-bold uppercase`}>
         <span className={`text-secondary`}>⊚</span> Billiards{' '}
