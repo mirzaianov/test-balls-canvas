@@ -89,6 +89,7 @@ const Canvas: React.FC = () => {
     (e: React.MouseEvent<HTMLCanvasElement>) => {
       if (e.button === 0) {
         setIsMouseDown(true);
+        setShowColorPicker(false);
       } else if (e.button === 2) {
         e.preventDefault();
         const rect = e.currentTarget.getBoundingClientRect();

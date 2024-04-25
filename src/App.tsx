@@ -19,6 +19,10 @@ const App = (): JSX.Element => {
           <span className={`text-error`}>➽</span> To change a color of the ball
           - <span className={`font-bold uppercase text-error`}>right</span>{' '}
           click on the ball and pick the color
+          <br />
+          <span className={`pl-5 text-xs text-warning`}>
+            * works only if the ball is static
+          </span>
         </li>
       </ul>
       <Canvas />
