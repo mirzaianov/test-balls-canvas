@@ -1,4 +1,4 @@
-# The Balls Project
+# The Billiards Project
 
 ![MasterHead](./src/head.png)
 
