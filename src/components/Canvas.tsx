@@ -12,6 +12,10 @@ interface Size {
   height: number;
 }
 
+interface ColorResult {
+  hex: string;
+}
+
 const BREAKPOINT = 768;
 const PADDING = 20;
 const CANVAS_INITIAL_WIDTH = BREAKPOINT - PADDING * 2;
@@ -40,6 +44,8 @@ const Canvas: React.FC = () => {
   const [pickerPosition, setPickerPosition] = useState({ x: -9999, y: -9999 });
 
   const colorPickerRef = useRef<HTMLDivElement>(null);
+  const contextRef = useRef<CanvasRenderingContext2D>();
+  const canvasRef = useRef<HTMLCanvasElement>(null!);
 
   useEffect(() => {
     const handleResize = () => {
@@ -58,30 +64,26 @@ const Canvas: React.FC = () => {
 
     window.addEventListener('resize', handleResize);
 
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
+    return () => window.removeEventListener('resize', handleResize);
   }, [setCanvasSize]);
 
   const [balls, setBalls] = useState<Ball[]>(
     initialBalls(canvasSize.width, canvasSize.height),
   );
 
-  const contextRef = useRef<CanvasRenderingContext2D>();
-  const canvasRef = useRef<HTMLCanvasElement>(null!);
-
   useEffect(() => {
     if (showColorPicker && selectedBall && colorPickerRef.current) {
       const rect = canvasRef.current.getBoundingClientRect();
+      const colorPickerWidth = colorPickerRef.current.offsetWidth;
+      const colorPickerHeight = colorPickerRef.current.offsetHeight;
       let pickerX = selectedBall.x + selectedBall.radius + 5 + rect.left;
       let pickerY = selectedBall.y + selectedBall.radius + 5 + rect.top;
 
-      const colorPickerWidth = colorPickerRef.current.offsetWidth;
-      const colorPickerHeight = colorPickerRef.current.offsetHeight;
       if (pickerX + colorPickerWidth > window.innerWidth) {
         pickerX =
           selectedBall.x - selectedBall.radius - colorPickerWidth + rect.left;
       }
+
       if (pickerY + colorPickerHeight > window.innerHeight) {
         pickerY =
           selectedBall.y - selectedBall.radius - colorPickerHeight + rect.top;
@@ -103,6 +105,54 @@ const Canvas: React.FC = () => {
     animateBalls(balls, context, canvas);
   }, [balls]);
 
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const interval = setInterval(() => moveBalls(canvas, setBalls), 10);
+
+    setBalls((prevBalls) => prevBalls.map((ball) => ({ ...ball })));
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const handleGlobalMouseUp = () => {
+      setIsMouseDown(false);
+    };
+
+    window.addEventListener('mouseup', handleGlobalMouseUp);
+
+    return () => window.removeEventListener('mouseup', handleGlobalMouseUp);
+  }, []);
+
+  useEffect(() => {
+    const handleGlobalMouseDown = (e: MouseEvent) => {
+      if (e.button === 0) {
+        setIsMouseDown(true);
+      }
+    };
+
+    window.addEventListener('mousedown', handleGlobalMouseDown);
+
+    return () => window.removeEventListener('mousedown', handleGlobalMouseDown);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        canvasRef.current &&
+        colorPickerRef.current &&
+        !canvasRef.current.contains(e.target as Node) &&
+        !colorPickerRef.current.contains(e.target as Node)
+      ) {
+        setShowColorPicker(false);
+      }
+    };
+
+    window.addEventListener('mousedown', handleClickOutside);
+
+    return () => window.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (isMouseDown) {
       moveMouse(e, balls, setBalls);
@@ -123,6 +173,7 @@ const Canvas: React.FC = () => {
 
         const clickedBall = balls.find((ball) => {
           const distance = Math.sqrt((ball.x - x) ** 2 + (ball.y - y) ** 2);
+
           return distance <= ball.radius;
         });
 
@@ -135,10 +186,12 @@ const Canvas: React.FC = () => {
 
           const colorPickerWidth = colorPickerRef.current?.offsetWidth ?? 0;
           const colorPickerHeight = colorPickerRef.current?.offsetHeight ?? 0;
+
           if (pickerX + colorPickerWidth > window.innerWidth) {
             pickerX =
               clickedBall.x - clickedBall.radius - colorPickerWidth + rect.left;
           }
+
           if (pickerY + colorPickerHeight > window.innerHeight) {
             pickerY =
               clickedBall.y - clickedBall.radius - colorPickerHeight + rect.top;
@@ -158,12 +211,9 @@ const Canvas: React.FC = () => {
     setIsMouseDown(false);
   };
 
-  interface ColorResult {
-    hex: string;
-  }
-
   const handleColorChange = (colorResult: ColorResult) => {
     setColor(colorResult.hex);
+
     if (selectedBall) {
       setBalls(
         updateBallColor(
@@ -173,64 +223,9 @@ const Canvas: React.FC = () => {
         ) as React.SetStateAction<Ball[]>,
       );
     }
+
     setShowColorPicker(false);
   };
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const interval = setInterval(() => moveBalls(canvas, setBalls), 10);
-
-    setBalls((prevBalls) => {
-      return prevBalls.map((ball) => ({ ...ball }));
-    });
-
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const handleGlobalMouseUp = () => {
-      setIsMouseDown(false);
-    };
-
-    window.addEventListener('mouseup', handleGlobalMouseUp);
-
-    return () => {
-      window.removeEventListener('mouseup', handleGlobalMouseUp);
-    };
-  }, []);
-
-  useEffect(() => {
-    const handleGlobalMouseDown = (e: MouseEvent) => {
-      if (e.button === 0) {
-        setIsMouseDown(true);
-      }
-    };
-
-    window.addEventListener('mousedown', handleGlobalMouseDown);
-
-    return () => {
-      window.removeEventListener('mousedown', handleGlobalMouseDown);
-    };
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        canvasRef.current &&
-        colorPickerRef.current &&
-        !canvasRef.current.contains(e.target as Node) &&
-        !colorPickerRef.current.contains(e.target as Node)
-      ) {
-        setShowColorPicker(false);
-      }
-    };
-
-    window.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      window.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
 
   return (
     <>

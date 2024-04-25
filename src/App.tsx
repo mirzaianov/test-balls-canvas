@@ -5,10 +5,7 @@ const App = (): JSX.Element => {
     <main
       className={`app relative flex w-full flex-col items-center justify-center gap-10 p-5 pt-10`}
     >
-      <h1 className={`text-5xl font-bold uppercase`}>
-        <span className={`text-secondary`}>⊚</span> Billiards{' '}
-        <span className={`text-secondary`}>⊚</span>
-      </h1>
+      <h1 className={`text-5xl font-bold uppercase`}>Billiards</h1>
       <ul>
         <li>
           <span className={`text-accent`}>➽</span> To push a ball - hold the{' '}
