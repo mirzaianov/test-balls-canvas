@@ -158,13 +158,21 @@ const Canvas: React.FC = () => {
     setIsMouseDown(false);
   };
 
-  const handleColorChange = (color: any) => {
-    setColor(color.hex);
-    setBalls(
-      updateBallColor(balls, selectedBall, color.hex) as React.SetStateAction<
-        Ball[]
-      >,
-    );
+  interface ColorResult {
+    hex: string;
+  }
+
+  const handleColorChange = (colorResult: ColorResult) => {
+    setColor(colorResult.hex);
+    if (selectedBall) {
+      setBalls(
+        updateBallColor(
+          balls,
+          selectedBall,
+          colorResult.hex,
+        ) as React.SetStateAction<Ball[]>,
+      );
+    }
     setShowColorPicker(false);
   };
 
