@@ -119,9 +119,9 @@ const Canvas: React.FC = () => {
       setIsMouseDown(false);
     };
 
-    window.addEventListener('mouseup', handleGlobalMouseUp);
+    window.addEventListener('pointerup', handleGlobalMouseUp);
 
-    return () => window.removeEventListener('mouseup', handleGlobalMouseUp);
+    return () => window.removeEventListener('pointerup', handleGlobalMouseUp);
   }, []);
 
   useEffect(() => {
@@ -131,9 +131,10 @@ const Canvas: React.FC = () => {
       }
     };
 
-    window.addEventListener('mousedown', handleGlobalMouseDown);
+    window.addEventListener('pointerdown', handleGlobalMouseDown);
 
-    return () => window.removeEventListener('mousedown', handleGlobalMouseDown);
+    return () =>
+      window.removeEventListener('pointerdown', handleGlobalMouseDown);
   }, []);
 
   useEffect(() => {
@@ -148,9 +149,9 @@ const Canvas: React.FC = () => {
       }
     };
 
-    window.addEventListener('mousedown', handleClickOutside);
+    window.addEventListener('pointerdown', handleClickOutside);
 
-    return () => window.removeEventListener('mousedown', handleClickOutside);
+    return () => window.removeEventListener('pointerdown', handleClickOutside);
   }, []);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
