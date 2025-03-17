@@ -1,46 +1,48 @@
 # The Billiards Project
 
-![MasterHead](./src/head.png)
+![MasterHead](./head.png)
 
 ## Description
 
-A test project that renders a set of balls on a canvas
+### A test project that renders a set of balls on a canvas
 
 ### Features
 
-- ! A link for the deployed demo app is provided separetely.
-- No third-part libriries for physics are used.
+- No third-part libraries for physics are used.
 - A rectangular canvas field is initially filled with a random set of balls of a different size and color.
 - The user can push a ball if he/she holds the left button of a mouse and touches the ball.
-- The pushed ball elasticly collides with the other balls on the canvas and with the borders of the canvas losing its velocity.
+- The pushed ball elastically collides with the other balls on the canvas and with the borders of the canvas losing its velocity.
 - The user can change a color of the ball with a context menu if he/she right-clicks a mouse on this ball.
 
 ### Dependencies
 
-- Vite
-- React + TypeScript + Tailwind
-- Canvas
+1. `React` • `TypeScript` • `Tailwind`
+2. `Canvas`
 
-### Installation
+### Installation & Execution
 
-A start in the development mode:
+### Install via Vite
 
-    npm create vite@latest
-    cd my-project
-    npm install
+```bash
+  git clone https://github.com/mirzaianov/test-balls-canvas.git
+  cd test-balls-canvas
+  npm i
+```
 
-### Execution
+### Run in the development mode
 
-    npm run dev
+```bash
+  npm run dev
+```
 
-Vite will start:
+Vite will start frontend server on [http://localhost:5173/](http://localhost:5173/)
 
-- frontend server on http://localhost:5173/
+### Or open the deployed site
 
-## Authors
+[https://todo-mirzaianov.vercel.app/](https://todo-mirzaianov.vercel.app/)
 
-@mirzaianov
+## License
 
-## Version History
+### MIT license
 
-- 1.0.1 First Release
+You can use the code, but I ask you do not copy this site without giving me credit.
